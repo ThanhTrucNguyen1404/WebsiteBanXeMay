@@ -1,0 +1,53 @@
+﻿@model List<WebsiteBanXeMay___Coding.Models.GioHangItem>
+
+@{
+    ViewData["Title"] = "Thanh Toán";
+}
+
+<h2 class="text-center">Thanh Toán</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning text-center">Giỏ hàng của bạn đang trống.</div>
+}
+else
+{
+    <table class="table table-bordered text-center">
+        <thead>
+            <tr>
+                <th>Hình ảnh</th>
+                <th>Sản phẩm</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Tổng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><img src="@item.ImageUrl" alt="@item.Name" style="width: 80px; height: 80px;"></td>
+                    <td>@item.Name</td>
+                    <td>@item.Price.ToString("N0") VNĐ</td>
+                    <td>@item.Quantity</td>
+                    <td>@(item.Quantity * item.Price) VNĐ</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-right">
+        <h4>Tổng tiền: <strong>@Model.Sum(i => i.Quantity * i.Price) VNĐ</strong></h4>
+    </div>
+
+    <form asp-action="PlaceOrder" method="post">
+        <div class="form-group">
+            <label>Phương thức thanh toán:</label>
+            <select name="paymentMethod" class="form-control" required>
+                <option value="COD">Thanh toán khi nhận hàng</option>
+                <option value="BankTransfer">Chuyển khoản ngân hàng</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success btn-lg btn-block mt-3">Xác nhận đặt hàng</button>
+    </form>
+}

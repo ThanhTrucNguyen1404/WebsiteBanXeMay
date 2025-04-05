@@ -1,0 +1,82 @@
+﻿@model List<WebsiteBanXeMay___Coding.Models.GioHangItem>
+
+@{
+    ViewData["Title"] = "Giỏ Hàng";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center" style="font-size: 2.5rem; color: #007bff;">Giỏ Hàng</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <p class="text-center text-danger" style="font-size: 1.25rem;">Giỏ hàng trống.</p>
+    }
+    else
+    {
+        <table class="table table-bordered text-center" style="border-radius: 10px; overflow: hidden;">
+            <thead class="thead-dark" style="background-color: #343a40; color: white;">
+                <tr>
+                    <th>Hình ảnh</th>
+                    <th>Sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Tổng</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <img src="@item.ImageUrl" alt="@item.Name" class="img-thumbnail" style="width: 80px; height: 80px; border-radius: 10px;">
+                        </td>
+                        <td>@item.Name</td>
+                        <td>@item.Price.ToString("#,##0", new System.Globalization.CultureInfo("vi-VN")) VNĐ</td>
+                        <td>
+                            <form asp-action="UpdateCart" method="post">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input type="number" name="quantity" value="@item.Quantity" min="1" max="@item.StockQuantity" style="width: 80px; padding: 5px; font-size: 1.25rem;" />
+                                <button type="submit" class="btn btn-primary btn-sm" style="border-radius: 20px;">Cập nhật</button>
+                            </form>
+                        </td>
+                        <td>@(string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0} VNĐ", item.Quantity * item.Price))</td>
+                        <td>
+                            <a asp-action="RemoveFromCart" asp-route-productId="@item.ProductId" class="btn btn-danger btn-sm" style="border-radius: 20px;">Xóa</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="text-right mt-3">
+            <h4 class="text-danger" style="font-size: 1.5rem;">Tổng tiền: <strong>@Model.Sum(i => i.Quantity * i.Price).ToString("#,##0", new System.Globalization.CultureInfo("vi-VN")) VNĐ</strong></h4>
+
+            <form asp-controller="GioHang" asp-action="Checkout" method="post">
+                <button type="submit" class="btn btn-success" style="border-radius: 25px; padding: 10px 30px; font-size: 1.5rem;">
+                    Thanh toán
+                </button>
+            </form>
+        </div>
+    }
+</div>
+
+<style>
+    .table th, .table td {
+        font-size: 1.25rem;
+        padding: 15px;
+    }
+
+    .btn-primary, .btn-danger, .btn-success {
+        font-weight: bold;
+        border-radius: 20px;
+    }
+
+        .btn-primary:hover, .btn-danger:hover, .btn-success:hover {
+            opacity: 0.8;
+        }
+
+    .container {
+        max-width: 1200px;
+    }
+</style>

@@ -1,0 +1,26 @@
+﻿@model WebsiteBanXeMay___Coding.Models.NhanVien
+
+@{
+    ViewData["Title"] = "Xóa nhân viên";
+}
+
+<h2 class="text-danger text-center">@ViewData["Title"]</h2>
+
+<div class="card p-4 shadow-sm">
+    <h4 class="text-warning">⚠️ Bạn có chắc chắn muốn xóa nhân viên này?</h4>
+    <hr />
+
+    <p><strong>🆔 ID:</strong> @Model.Id</p>
+    <p><strong>👤 Họ Tên:</strong> @Model.HoTen</p>
+    <p><strong>🏢 Chức Vụ:</strong> @Model.ChucVu</p>
+    <p><strong>📧 Email:</strong> @(Model.User?.Email ?? "N/A")</p>
+
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-danger">🗑 Xóa</button>
+            <a asp-action="Index" class="btn btn-secondary">⬅️ Quay lại</a>
+        </div>
+    </form>
+</div>

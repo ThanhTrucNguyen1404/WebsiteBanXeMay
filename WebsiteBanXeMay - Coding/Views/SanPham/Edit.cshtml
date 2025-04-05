@@ -1,0 +1,146 @@
+﻿@model WebsiteBanXeMay___Coding.Models.SanPham
+
+@{
+    ViewData["Title"] = "Chỉnh sửa sản phẩm";
+}
+
+<h2 class="text-center text-primary"><i class="fas fa-edit"></i> Chỉnh sửa sản phẩm</h2>
+
+<div class="card shadow-lg p-4 mt-3">
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <th class="bg-light text-end" style="width: 30%;">Tên sản phẩm</th>
+                            <td><input asp-for="TenSanPham" class="form-control" required /></td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light text-end">Loại sản phẩm</th>
+                            <td>
+                                <select asp-for="LoaiSanPhamId" asp-items="ViewBag.LoaiSanPhamId" class="form-control" required>
+                                    <option value="">-- Chọn loại sản phẩm --</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light text-end">Nhà sản xuất</th>
+                            <td>
+                                <select asp-for="NhaSanXuatId" asp-items="ViewBag.NhaSanXuatId" class="form-control" required>
+                                    <option value="">-- Chọn nhà sản xuất --</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light text-end">Nhà cung cấp</th>
+                            <td>
+                                <select asp-for="NhaCungCapId" asp-items="ViewBag.NhaCungCapId" class="form-control" required>
+                                    <option value="">-- Chọn nhà cung cấp --</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light text-end">Giá bán (VNĐ)</th>
+                            <td><input asp-for="GiaBan" type="number" class="form-control" required min="0" /></td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light text-end">Số lượng tồn kho</th>
+                            <td><input asp-for="SoLuongTonKho" type="number" class="form-control" required min="0" /></td>
+                        </tr>
+                        <tr>
+                            <th class="bg-light text-end">Trạng thái</th>
+                            <td>
+                                <select asp-for="TrangThai" class="form-control">
+                                    <option value="true">Đang bán</option>
+                                    <option value="false">Ngừng bán</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-md-6 text-center">
+                <label class="fw-bold">Hình ảnh sản phẩm</label>
+                <div class="border p-2 rounded bg-light">
+                    @if (!string.IsNullOrEmpty(Model.HinhAnh))
+                    {
+                        <img id="imagePreview" src="@Model.HinhAnh" class="img-thumbnail shadow"
+                             style="max-width: 250px; display: block;" />
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="form-check mt-2">
+                                <input type="checkbox" class="form-check-input" name="RemoveImage" value="true" id="removeImage" />
+                                <label class="form-check-label" for="removeImage">Xóa ảnh hiện tại</label>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">Chưa có ảnh</p>
+                        <img id="imagePreview" src="#" class="img-thumbnail shadow"
+                             style="max-width: 250px; display: none;" />
+                    }
+
+                    <input type="file" name="HinhAnhFile" class="form-control" accept="image/png, image/jpeg"
+                           onchange="previewImage(event)" id="HinhAnhFile" />
+                    <small class="text-muted">Chỉ chấp nhận JPG, PNG (≤ 2MB).</small>
+                    <span id="fileError" class="text-danger" style="display: none;"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save"></i> Cập nhật</button>
+            <a asp-action="Index" class="btn btn-secondary btn-lg"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        </div>
+    </form>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <form asp-action="Delete" method="post" class="text-center mt-4">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger btn-lg"><i class="fas fa-trash"></i> Xóa sản phẩm</button>
+        </form>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function previewImage(event) {
+            var file = event.target.files[0];
+            var fileError = document.getElementById('fileError');
+            var output = document.getElementById('imagePreview');
+
+            if (file) {
+                var allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+                if (!allowedExtensions.exec(file.name)) {
+                    fileError.textContent = "Chỉ chấp nhận file JPG hoặc PNG!";
+                    fileError.style.display = "block";
+                    event.target.value = "";
+                    output.style.display = "none";
+                    return;
+                }
+
+                if (file.size > 2 * 1024 * 1024) {
+                    fileError.textContent = "Dung lượng file quá lớn! (Tối đa 2MB)";
+                    fileError.style.display = "block";
+                    event.target.value = "";
+                    output.style.display = "none";
+                    return;
+                }
+
+                fileError.style.display = "none";
+                var reader = new FileReader();
+                reader.onload = function () {
+                    output.src = reader.result;
+                    output.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+}

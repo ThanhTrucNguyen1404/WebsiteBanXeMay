@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] - WebsiteBanXeMay</title>
+    <link rel="icon" type="image/png" href="~/favicon.ico">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* Nền hồng cho toàn bộ trang */
+        body {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4); /* Gradient hồng nhạt */
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            color: #000000; /* Chữ màu đen */
+            font-family: 'Arial', sans-serif;
+            font-size: 16px;
+        }
+
+        /* Nền hồng cho header */
+        header {
+            background: linear-gradient(135deg, #ff758c, #ff7eb3); /* Gradient hồng đậm */
+        }
+
+        /* Nền hồng cho navbar */
+        .navbar {
+            background: linear-gradient(90deg, #ff6f61, #ff8e8e); /* Gradient hồng cam */
+        }
+
+        /* Nền hồng cho footer */
+        footer {
+            background: linear-gradient(45deg, #ff758c, #ff7eb3); /* Gradient hồng */
+        }
+
+        /* Hiệu ứng đẹp cho menu */
+        .custom-nav-link {
+            background: linear-gradient(135deg, #ff85a2, #ff4f7a);
+            color: #000000 !important; /* Chữ màu đen */
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            margin: 5px;
+            font-size: 18px;
+        }
+
+            .custom-nav-link:hover {
+                background: linear-gradient(135deg, #ff4f7a, #ff1744);
+                transform: scale(1.05);
+            }
+
+        /* Chỉnh lại kích thước chữ trong menu */
+        header .navbar .navbar-brand,
+        header .navbar .nav-link {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Chỉnh lại footer */
+        footer {
+            font-size: 14px;
+            color: #000000; /* Chữ màu đen */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-motorcycle"></i> WebsiteBanXeMay
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link custom-nav-link" asp-controller="SanPham" asp-action="Index">
+                                <i class="fas fa-home"></i> Sản phẩm
+                            </a>
+                        </li>
+
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && !User.IsInRole("Admin") && !User.IsInRole("NhanVien"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" asp-controller="LichSuMuaHang" asp-action="LichSu">
+                                    <i class="fas fa-file-invoice"></i> Lịch sử mua hàng
+                                </a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" asp-controller="DonDatHang" asp-action="Index">
+                                    <i class="fas fa-shopping-cart"></i> Đơn hàng
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" asp-controller="KhachHang" asp-action="Index">
+                                    <i class="fas fa-users"></i> Khách hàng
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" asp-controller="LoaiSanPham" asp-action="Index">
+                                    <i class="fas fa-cogs"></i> Loại sản phẩm
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" asp-controller="NhaCungCap" asp-action="Index">
+                                    <i class="fas fa-truck"></i> Nhà cung cấp
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" asp-controller="NhanVien" asp-action="Index">
+                                    <i class="fas fa-user-tie"></i> Nhân viên
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" asp-controller="NhaSanXuat" asp-action="Index">
+                                    <i class="fas fa-industry"></i> Nhà sản xuất
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" asp-controller="PhieuNhap" asp-action="Index">
+                                    <i class="fas fa-file-invoice"></i> Phiếu nhập
+                                </a>
+                            </li>
+                        }
+                        @if (User.IsInRole("NhanVien"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link custom-nav-link" asp-controller="DonDatHang" asp-action="Index">
+                                    <i class="fas fa-shopping-cart"></i> Đơn hàng (Nhân viên)
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        @await Html.PartialAsync("_LoginPartial")
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <main class="col-md-12 ms-sm-auto col-lg-12 px-md-4">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <footer class="border-top footer text-muted text-center py-3">
+        <div class="container">
+            &copy; 2025 - WebsiteBanXeMay | <a asp-controller="Home" asp-action="Privacy">Chính sách bảo mật</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
