@@ -1,0 +1,62 @@
+﻿@model WebsiteBanXeMay___Coding.Models.NhaCungCap
+
+@{
+    ViewData["Title"] = "Thêm Nhà Cung Cấp";
+}
+
+<h2 class="text-center text-primary">Thêm Nhà Cung Cấp</h2>
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <form asp-action="Add" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label asp-for="TenNhaCungCap" class="form-label">Tên Nhà Cung Cấp <span class="text-danger">*</span></label>
+                <input asp-for="TenNhaCungCap" class="form-control" placeholder="Nhập tên nhà cung cấp" required />
+                <span asp-validation-for="TenNhaCungCap" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="DiaChi" class="form-label">Địa Chỉ</label>
+                <input asp-for="DiaChi" class="form-control" placeholder="Nhập địa chỉ (tùy chọn)" />
+                <span asp-validation-for="DiaChi" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SoDienThoai" class="form-label">Số Điện Thoại <span class="text-danger">*</span></label>
+                <input asp-for="SoDienThoai" class="form-control" placeholder="Nhập số điện thoại" required pattern="^\d{8,15}$" title="Số điện thoại phải có từ 8 đến 15 chữ số" />
+                <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" type="email" class="form-control" placeholder="Nhập email (tùy chọn)" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="MoTa" class="form-label">Mô Tả</label>
+                <textarea asp-for="MoTa" class="form-control" rows="3" placeholder="Nhập mô tả (tùy chọn)"></textarea>
+                <span asp-validation-for="MoTa" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100"><i class="fas fa-plus-circle"></i> Thêm Nhà Cung Cấp</button>
+            <a asp-action="Index" class="btn btn-secondary w-100 mt-2"><i class="fas fa-arrow-left"></i> Quay Lại</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

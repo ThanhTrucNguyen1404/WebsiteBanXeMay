@@ -1,0 +1,41 @@
+﻿@model IEnumerable<WebsiteBanXeMay___Coding.Models.NhaSanXuat>
+
+@{
+    ViewData["Title"] = "Danh sách nhà sản xuất";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>
+    <a asp-action="Add" class="btn btn-primary">Thêm mới</a>
+</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên Nhà Sản Xuất</th>
+            <th>Địa Chỉ</th>
+            <th>Số Điện Thoại</th>
+            <th>Email</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.TenNhaSanXuat</td>
+                <td>@item.DiaChi</td>
+                <td>@item.SoDienThoai</td>
+                <td>@item.Email</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Chi tiết</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Chỉnh sửa</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

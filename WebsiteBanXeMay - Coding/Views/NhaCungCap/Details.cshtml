@@ -1,0 +1,20 @@
+﻿@model WebsiteBanXeMay___Coding.Models.NhaCungCap
+
+@{
+    ViewData["Title"] = "Chi Tiết Nhà Cung Cấp";
+}
+
+<h2 class="text-center text-primary">Chi Tiết Nhà Cung Cấp</h2>
+<hr />
+
+<div>
+    <p><strong>Tên:</strong> @Model.TenNhaCungCap</p>
+    <p><strong>Địa Chỉ:</strong> @Model.DiaChi</p>
+    <p><strong>Điện Thoại:</strong> @Model.SoDienThoai</p>
+    <p><strong>Email:</strong> @Model.Email</p>
+    <p><strong>Mô Tả:</strong> @Model.MoTa</p>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Quay Lại</a>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Sửa</a>
+<a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Xóa</a>
