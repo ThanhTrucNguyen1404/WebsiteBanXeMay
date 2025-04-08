@@ -1,0 +1,114 @@
+﻿@model Order
+@using WebsiteBanXeMay_Nhom3.Models
+
+@{
+    var cartItems = ViewData["CartItems"] as List<CartItem>;
+}
+
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h2 class="text-center text-primary mb-4">🛒 Thanh toán</h2>
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <!-- Hiển thị danh sách sản phẩm trong giỏ hàng -->
+        <h4 class="text-secondary">🛍 Sản phẩm trong giỏ hàng:</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Hình ảnh</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Tổng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (cartItems != null && cartItems.Any())
+                    {
+                        @foreach (var item in cartItems)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>
+                                    @{
+                                        var imagePath = item.ImageUrl.StartsWith("/Images/") ? item.ImageUrl : Url.Content("~/Images/" + item.ImageUrl);
+                                    }
+                                    <img src="@imagePath" alt="@item.Name"
+                                         class="img-fluid border rounded shadow"
+                                         style="width: 100px; height: 100px; object-fit: cover;">
+                                </td>
+                                <td>@item.Price.ToString("C", new System.Globalization.CultureInfo("vi-VN"))</td>
+                                <td>@item.Quantity</td>
+                                <td class="item-total">@((item.Price * item.Quantity).ToString("C", new System.Globalization.CultureInfo("vi-VN")))</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-danger fw-bold">Giỏ hàng của bạn trống</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Form Thanh toán -->
+        <form asp-action="Checkout" asp-controller="ShoppingCart" method="post">
+            <div class="mb-3">
+                <label class="form-label">📍 Địa chỉ giao hàng:</label>
+                <input type="text" name="ShippingAddress" class="form-control" placeholder="Nhập địa chỉ giao hàng" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">📝 Ghi chú:</label>
+                <textarea name="Notes" class="form-control" placeholder="Nhập ghi chú nếu có" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">💰 Tổng tiền:</label>
+                <input type="text" class="form-control"
+                       value="@((cartItems != null) ? cartItems.Sum(i => i.Price * i.Quantity).ToString("#,##0") : "0") đ" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">💳 Phương thức thanh toán:</label>
+                <select name="PaymentMethod" class="form-select">
+                    <option value="COD">📦 Thanh toán khi nhận hàng (COD)</option>
+                    <option value="BankTransfer">🏦 Chuyển khoản ngân hàng</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success px-4 py-2">✅ Xác nhận</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .card {
+        max-width: 800px;
+        margin: auto;
+        border-radius: 10px;
+        background: #f8f9fa;
+    }
+
+    .form-label {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .btn-success {
+        font-size: 18px;
+    }
+
+    .table th, .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+</style>

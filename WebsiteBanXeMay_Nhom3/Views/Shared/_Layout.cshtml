@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MotoShop</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold text-white" asp-area="" asp-controller="Home" asp-action="Index">
+                    Cửa hàng xe máy Phát Tài Luôn
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Home" asp-action="Index">Trang Chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Product" asp-action="Index">Danh Sách Xe</a>
+                        </li>
+                        <li class="nav-item">
+                            @if (!User.IsInRole("Admin") && !User.IsInRole("Staff"))  // Chỉ hiển thị nếu không phải Admin hoặc Nhân viên
+                            {
+                                <a class="nav-link text-white" asp-controller="Order" asp-action="History">Lịch Sử Đơn Hàng</a>
+                            }
+                        </li>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Staff"))  // Chỉ Admin & Nhân viên thấy được
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Categories" asp-action="Index">Danh Mục</a>
+                            </li>
+                        }
+                    </ul>
+
+
+                    <!-- Ô tìm kiếm -->
+                    <form class="d-flex position-relative" onsubmit="return handleSearch(event)">
+                        <input class="form-control me-2" type="text" id="searchBox" placeholder="Tìm kiếm xe máy..." autocomplete="off">
+                        <button class="btn btn-outline-light" type="submit">Tìm</button>
+                        <ul id="suggestions" class="list-group position-absolute w-100"></ul>
+                    </form>
+
+                    <partial name="_LoginPartial" /> <!-- Khu vực đăng nhập -->
+                    <!-- Nút giỏ hàng -->
+                    <a class="btn btn-outline-light ms-2" asp-controller="ShoppingCart" asp-action="Index">
+                        <i class="bi-cart-fill me-1"></i> Giỏ hàng
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="bg-dark text-white text-center p-3">
+        <p class="mb-0">Cửa hàng xe máy Phát Tài Luôn - Hệ thống bán xe máy uy tín | Hotline: 1800-1234</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#searchBox").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Product/GetSuggestions",
+                        type: "GET",
+                        data: { term: request.term },
+                        success: function (data) {
+                            if (data.length > 0) {
+                                response(data);
+                            } else {
+                                response([{ label: "Không tìm thấy xe", id: null }]);
+                            }
+                        },
+                        error: function () {
+                            console.error("Lỗi khi gọi API GetSuggestions");
+                        }
+                    });
+                },
+                minLength: 2,
+                select: function (event, ui) {
+                    if (ui.item.id) {
+                        window.location.href = "/Product/Display/" + ui.item.id;
+                    }
+                }
+            });
+
+            $(document).click(function (e) {
+                if (!$(e.target).closest("#searchBox, #suggestions").length) {
+                    $("#suggestions").hide();
+                }
+            });
+        });
+
+        function handleSearch(event) {
+            event.preventDefault();
+            var query = document.getElementById("searchBox").value;
+            if (query.trim() !== "") {
+                window.location.href = "/Product/Search?query=" + encodeURIComponent(query);
+            }
+        }
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
